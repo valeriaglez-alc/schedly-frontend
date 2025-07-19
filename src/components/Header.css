@@ -1,0 +1,42 @@
+.header {
+  border-bottom: 3px solid #0097b2;
+  background-color: #fff;
+  padding: 10px 20px;
+  font-family: 'Afacad', sans-serif;
+}
+
+.nav-bar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+
+.nav-left, .nav-right {
+  display: flex;
+  gap: 15px;
+}
+
+.nav-left {
+  justify-content: flex-start;
+}
+
+.nav-right {
+  justify-content: flex-end;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-image {
+  height: 80px;
+  width: auto;
+  object-fit: contain;
+}
+
+.nav-bar .nav-left a {
+  color: #737373;
+  text-decoration: none; /* opcional, para quitar el subrayado */
+}
