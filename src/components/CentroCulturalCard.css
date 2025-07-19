@@ -1,0 +1,33 @@
+.card {
+  background-color: #2ca4bb;
+  color: #333;
+  border-radius: 20px;
+  padding: 20px;
+  height: 130px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Afacad', sans-serif;
+  cursor: pointer;
+  text-align: center;
+}
+
+.card:hover {
+  background-color: #238ba0;
+}
+
+.descripcion {
+  display: none;
+  margin-top: 10px;
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.card:hover .descripcion {
+  display: block;
+}
