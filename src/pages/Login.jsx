@@ -6,14 +6,36 @@ function Login() {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+
     if (!email || !password) {
       alert('Por favor completa todos los campos');
       return;
     }
-    localStorage.setItem('usuario', email);
-    navigate('/Dashboard');
+
+    try {
+      const res = await fetch('http://localhost:5000/api/usuarios/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || 'Credenciales incorrectas');
+        return;
+      }
+
+      localStorage.setItem('usuario', JSON.stringify(data.usuario));
+      localStorage.setItem('token', data.token);
+
+      navigate('/Dashboard');
+    } catch (error) {
+      console.error('Error al iniciar sesión:', error);
+      alert('Error al conectar con el servidor');
+    }
   };
 
   return (
@@ -41,11 +63,15 @@ function Login() {
             required
           />
 
-          <button type="submit" style={styles.button}>Iniciar sesión</button>
+          <button type="submit" style={styles.button}>
+            Iniciar sesión
+          </button>
 
           <p style={styles.register}>
             ¿No tienes una cuenta?{' '}
-            <Link to="/register" style={styles.link}>Regístrate aquí</Link>
+            <Link to="/register" style={styles.link}>
+              Regístrate aquí
+            </Link>
           </p>
         </form>
       </div>
