@@ -1,25 +1,39 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import CentroCulturalCard from '../components/CentroCulturalCard';
 import Header from '../components/Header';
 import './Dashboard.css';
 
-const centros = [
-  { nombre: 'Ortográfika', descripcion: 'Centro cultural enfocado en diseño y arte.' },
-  { nombre: 'Mercado Bola', descripcion: 'Espacio comunitario con talleres y exposiciones.' },
-  { nombre: 'Mixcoacalli', descripcion: 'Centro cultural con enfoque en teatro y danza.' },
-  { nombre: 'Cultural Centenario', descripcion: 'Promueve la cultura local y tradicional.' },
-  { nombre: 'Casa Iteso', descripcion: 'Iniciativa de la universidad con eventos educativos.' },
-  { nombre: 'Casa Iteso', descripcion: 'Otro punto de encuentro para la comunidad estudiantil.' },
-];
-
 const Dashboard = () => {
+  const [centros, setCentros] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/centros') // Ajusta la URL si es necesario
+      .then(res => {
+        if (!res.ok) throw new Error('Error al obtener centros culturales');
+        return res.json();
+      })
+      .then(data => {
+        setCentros(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <p>Cargando centros culturales...</p>;
+  if (error) return <p>Error: {error}</p>;
+
   return (
     <div>
       <Header />
       <div className="dashboard">
-        {centros.map((centro, index) => (
+        {centros.map((centro) => (
           <CentroCulturalCard
-            key={index}
+            key={centro.id || centro.nombre} // usa un id único si tienes
             nombre={centro.nombre}
             descripcion={centro.descripcion}
           />
@@ -30,3 +44,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
