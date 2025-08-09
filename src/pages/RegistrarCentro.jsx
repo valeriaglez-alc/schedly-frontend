@@ -1,68 +1,80 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import '../components/Forms.css'; // importa los estilos
 
 const RegistrarCentro = () => {
-  const [nombre, setNombre] = useState('');
-  const [direccion, setDireccion] = useState('');
-  const [descripcion, setDescripcion] = useState('');
-  const [contacto, setContacto] = useState('');
-  const [mensaje, setMensaje] = useState('');
+  const [formData, setFormData] = useState({
+    nombre: '',
+    descripcion: '',
+    direccion: '',
+    contacto: '',
+  });
+
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
+
     try {
       const res = await fetch('http://localhost:5000/api/centros', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre, direccion, descripcion, contacto }),
+        body: JSON.stringify(formData),
       });
+
       if (!res.ok) throw new Error('Error al registrar centro cultural');
-      setMensaje('Centro cultural registrado con éxito');
-      setNombre('');
-      setDireccion('');
-      setDescripcion('');
-      setContacto('');
-    } catch (error) {
-      setMensaje(error.message);
+
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.message);
     }
   };
 
   return (
-    <div>
+    <div className="form-container">
       <h2>Registrar Centro Cultural</h2>
+      {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <input
           type="text"
+          name="nombre"
           placeholder="Nombre"
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
+          value={formData.nombre}
+          onChange={handleChange}
           required
         />
         <input
           type="text"
+          name="direccion"
           placeholder="Dirección"
-          value={direccion}
-          onChange={(e) => setDireccion(e.target.value)}
+          value={formData.direccion}
+          onChange={handleChange}
           required
         />
         <textarea
+          name="descripcion"
           placeholder="Descripción"
-          value={descripcion}
-          onChange={(e) => setDescripcion(e.target.value)}
-          required
+          value={formData.descripcion}
+          onChange={handleChange}
+          rows="3"
         />
         <input
           type="text"
+          name="contacto"
           placeholder="Contacto"
-          value={contacto}
-          onChange={(e) => setContacto(e.target.value)}
-          required
+          value={formData.contacto}
+          onChange={handleChange}
         />
         <button type="submit">Registrar</button>
       </form>
-      {mensaje && <p>{mensaje}</p>}
     </div>
   );
 };
 
 export default RegistrarCentro;
-
