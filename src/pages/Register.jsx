@@ -7,15 +7,34 @@ function Register() {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
+
     if (!nombre || !email || !password) {
       alert('Por favor completa todos los campos');
       return;
     }
-    localStorage.setItem('usuario', email);
-    alert('Registro exitoso. Ahora inicia sesión.');
-    navigate('/login');
+
+    try {
+      const res = await fetch('http://localhost:5000/api/usuarios/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre, email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || 'Error al registrar usuario');
+        return;
+      }
+
+      alert('Registro exitoso. Ahora inicia sesión.');
+      navigate('/login');
+    } catch (error) {
+      console.error('Error en registro:', error);
+      alert('Error al conectar con el servidor');
+    }
   };
 
   return (
@@ -52,10 +71,15 @@ function Register() {
             required
           />
 
-          <button type="submit" style={styles.button}>¡Registrarme!</button>
+          <button type="submit" style={styles.button}>
+            ¡Registrarme!
+          </button>
 
           <p style={styles.register}>
-            ¿Ya tienes cuenta? <Link to="/login" style={styles.link}>Inicia sesión aquí</Link>
+            ¿Ya tienes cuenta?{' '}
+            <Link to="/login" style={styles.link}>
+              Inicia sesión aquí
+            </Link>
           </p>
         </form>
       </div>
@@ -76,7 +100,7 @@ const styles = {
   },
   box: {
     display: 'flex',
-    flexDirection: 'column',  // <- Asegura que el logo esté arriba y centrado
+    flexDirection: 'column',
     alignItems: 'center',
   },
   logo: {
